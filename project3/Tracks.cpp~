@@ -1,0 +1,55 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include "Tracks.hpp"
+#include "Track.hpp"
+#include "Albums.hpp"
+
+using namespace std;
+
+int Tracks:: numTracks()
+{
+  return listOfTracks() -> size();
+}
+
+void Tracks:: addTracks(Track *track)
+{
+  listOfTracks() -> push_back(track);
+}
+
+
+void Tracks:: loadTracksFromFile(string fileName)
+{
+  fstream trackStream;
+  string tracksName = "Tracks.json";
+  trackStream.open(tracksName.c_str(), fstream::in);
+  parseJSONArray(trackStream);
+  trackStream.close();
+}
+
+string Tracks:: htmlString()
+{
+  string html;
+  for(int i = 0; i < numTracks(); i++)
+    {
+      html.append(" Artist Name: " + _listOfDataObjects -> at(i) -> valueForStringAttribute("artist_name"));
+      html.append(" Artist ID: " + to_string(_listOfDataObjects -> at(i) -> valueForIntegerAttribute("artist_id")));
+      html.append(" Profile: " + _listOfDataObjects -> at(i) -> valueForStringAttribute("profile"));
+      html.append(" Real Name: " + _listOfDataObjects -> at(i) -> valueForStringAttribute("real_name"));
+      html.append(" Num Images:  " + _listOfDataObjects -> at(i) -> valueForStringAttribute("num_images"));
+    }
+  return html;
+}
+
+
+void Tracks:: runAsserts()
+{
+}
+
+void Tracks:: print()
+{
+  for( int i = 0; i < numTracks(); i++)
+    listOfTracks() -> at(i) -> print();
+}
+

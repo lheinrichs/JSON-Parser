@@ -1,0 +1,61 @@
+#include <iostream>
+#include <fstream>
+#include "JSONDataObject.hpp"
+#include "Artists.hpp"
+#include "Track.hpp"
+#include "Tracks.hpp"
+#include "Artists.hpp"
+#include "AlbumImages.hpp"
+#include "ArtistImages.hpp"
+
+using namespace std;
+
+int main()
+{
+
+  Tracks *tracks = new Tracks;
+  tracks -> loadTracksFromFile("Tracks.json");
+  ofstream trackFile;
+  trackFile.open("Tracks.html");
+  trackFile << tracks -> htmlString();
+  trackFile.close();
+
+
+   AlbumImages *albumImages = new AlbumImages;
+  albumImages -> loadAlbumImagesFromFile("AlbumImages.json");
+  cout <<"Printing album images: " << endl;
+  albumImages -> print();
+  
+  Albums *albums = new Albums;
+  albums -> loadAlbumsFromFile("Albums.json");
+  albums -> setTracksForAlbums(tracks);
+  albums -> setImagesForAlbums(albumImages);
+
+  albums -> print();
+
+  ArtistImages *artistImages = new ArtistImages;
+  artistImages -> loadArtistImagesFromFile("ArtistImages.json");
+  cout << "Printing artist images:  " << endl;
+  artistImages -> print();
+  
+  Artists *artists = new Artists;
+  artists -> loadArtistsFromFile("Artists.json");
+  artists -> setAlbumsForArtists(albums);
+  artists -> setImagesForArtists(artistImages);
+
+  artists -> print();
+  
+  albums -> setArtistsForAlbums(artists);
+  albums -> print();
+  
+  ofstream albumFile;
+  albumFile.open("Albums.html");
+  albumFile << albums -> htmlString();
+  albumFile.close();
+  
+  ofstream artistFile;
+  artistFile.open("Artists.html");
+  artistFile << artists -> htmlString();
+  artistFile.close();
+  
+}

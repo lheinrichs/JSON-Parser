@@ -1,0 +1,106 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <cctype>
+#include <cstdlib>
+#include "JSONDataItem.hpp"
+
+using namespace std;
+
+JSONDataItem:: JSONDataItem()
+{
+  _attribute = "";
+  _svalue = "";
+  _ivalue = 0;
+  _isNumber = false; 
+  hasReadAnItem = false;
+}
+
+void JSONDataItem:: parseJSONDataItem(fstream &stream)
+{
+  char cc;
+
+  if(!(stream >> cc) || cc != '"')
+    {
+      cout << "Expected a  quote.. got a " << cc << endl;
+      exit(1);
+    }
+
+  _attribute = readQuotedString(stream);
+
+  
+  if(!(stream >> cc) || cc != ':')
+    {
+      cout << "--Expected a colon, found --> " << cc <<  " <--." << endl;
+      exit(1);
+    }
+  
+ 
+  stream >> cc;
+
+  if(isdigit(cc))
+    {
+      _isNumber = true;
+      stream.unget();
+      stream >> _ivalue;
+    }
+  if( cc == '"')
+    {
+      _svalue = readQuotedString(stream);
+    }
+  hasReadAnItem = true;
+
+  print();
+
+}
+ 
+string JSONDataItem:: readQuotedString(fstream &stream)
+{
+  char cc;
+  string append;
+  stream >> cc;
+
+  while( cc != '"') 
+    {
+      if(cc == '\\')
+	{
+	  append += cc;
+	  stream.get(cc);
+	  append += cc;
+	}
+      else
+	append += cc;
+      stream.get(cc);
+      
+    }
+  return append;
+}
+
+string JSONDataItem:: attribute()
+{
+  return _attribute;
+}
+
+int JSONDataItem:: integerValue()
+{
+  return _ivalue;
+}
+
+string JSONDataItem:: stringValue()
+{
+  return _svalue;
+}
+
+bool JSONDataItem:: isNumber()
+{
+  return _isNumber;
+}
+
+void JSONDataItem:: print()
+{
+  if(_isNumber)
+    cout << _attribute << ' ' << _ivalue << endl;
+  else
+    cout << _attribute << ' '<< _svalue << endl;
+}
+

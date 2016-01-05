@@ -1,0 +1,50 @@
+#include "ArtistImages.hpp"
+#include <vector>
+#include <string>
+#include <iostream>
+
+using namespace std;
+
+int ArtistImages:: numArtistImages()
+{
+  return listOfDataObjects() -> size();
+}
+
+void ArtistImages:: addArtistImages(ArtistImage *artistImage)
+{
+  listOfDataObjects() -> push_back(artistImage);
+}
+
+void ArtistImages:: loadArtistImagesFromFile(string fileName)
+{
+  fstream artistImagesStream;
+  artistImagesStream.open(fileName.c_str(), fstream:: in);
+  parseJSONArray(artistImagesStream);
+  artistImagesStream.close();
+}
+
+string ArtistImages:: htmlString()
+{
+  string html;
+  for(int i = 0; i < numArtistImages(); i++)
+    {
+      html.append(to_string(_listOfDataObjects -> at(i) -> valueForIntegerAttribute("height")));
+      html.append(_listOfDataObjects -> at(i) -> valueForStringAttribute("uri"));
+      html.append(to_string(_listOfDataObjects -> at(i) -> valueForIntegerAttribute("artist_id")));
+      html.append(to_string(_listOfDataObjects -> at(i) -> valueForIntegerAttribute("width")));
+      html.append(_listOfDataObjects -> at(i) -> valueForStringAttribute("type"));
+    }
+  return html;
+}
+
+void ArtistImages:: runAsserts()
+{
+}
+
+void ArtistImages:: print()
+{
+  for(int i = 0; i < listOfArtistImages() -> size(); i++)
+    {
+      listOfArtistImages() -> at(i) -> print();
+    }
+}
